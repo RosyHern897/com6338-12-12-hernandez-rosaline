@@ -26,16 +26,73 @@ class Word {
   }
 
   // implement the guessLetter function:
-  // guessLetter(letter) {}
+  guessLetter(letter) {
+    // ignore if we've already guessed this letter
+    if (this.correctLetters.includes(letter) || this.incorrectLetters.includes(letter)) {
+      return
+    }
+
+    if (this.word.includes(letter)) {
+      // correct guess
+      this.correctLetters.push(letter)
+
+      // build a new displayWord revealing this letter
+      let newDisplay = ""
+      for (let i = 0; i < this.word.length; i++) {
+        if (this.word[i] === letter) {
+          newDisplay += letter
+        } else {
+          newDisplay += this.displayWord[i]
+        }
+      }
+      this.displayWord = newDisplay
+    } else {
+      // incorrect guess
+      this.remainingGuesses--
+      this.incorrectLetters.push(letter)
+    }
+  }
 
   // implement the updateScreen function:
-  // updateScreen() {}
+  updateScreen() {
+    const wordToGuessEl = document.getElementById('word-to-guess')
+    const remainingEl = document.getElementById('remaining-guesses')
+    const incorrectEl = document.getElementById('incorrect-letters')
+
+    wordToGuessEl.textContent = this.displayWord
+    remainingEl.textContent = String(this.remainingGuesses)
+    incorrectEl.textContent = this.incorrectLetters.join(', ')
+  }
 
   // implement the isGameOver function:
-  // isGameOver() {}
+  isGameOver() {
+    const wordSolved = this.displayWord === this.word
+    const outOfGuesses = this.remainingGuesses <= 0
+    return wordSolved || outOfGuesses
+  }
 
   // implement the getWinOrLoss function:
-  // getWinOrLoss() {}
+  getWinOrLoss() {
+    // if game not over, no result yet
+    if (!this.isGameOver()) {
+      return null
+    }
+
+    const wordSolved = this.displayWord === this.word
+    const hasGuesses = this.remainingGuesses > 0
+    const noGuesses = this.remainingGuesses <= 0
+
+    if (wordSolved && hasGuesses) {
+      return 'win'
+    }
+
+    if (!wordSolved && noGuesses) {
+      return 'loss'
+    }
+
+    // edge case not covered by tests
+    return null
+  }
 }
 
 function newGame() {
